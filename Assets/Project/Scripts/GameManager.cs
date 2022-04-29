@@ -100,7 +100,7 @@ namespace Web3MultiplayerRPG
 
             if(fromGMR) {
                 Debug.Log("Using Gate Location");
-                startPosition = gmrGateLocation.position;
+                startPosition = new Vector3(gmrGateLocation.position.x, gmrGateLocation.position.y, gmrGateLocation.position.z - 0.6f);
             } else {
                 Debug.Log("Using Default Location");
             }
@@ -118,6 +118,11 @@ namespace Web3MultiplayerRPG
             {
                 Debug.LogError("Player has not been instantiated.");
                 return;
+            }
+
+            if(fromGMR) {
+                var rotation = gmrGateLocation.transform.rotation;
+                _newPlayer.transform.Rotate(0.0f, 143.481f, 0.0f);
             }
             
             loadingPanel.SetActive(false);
