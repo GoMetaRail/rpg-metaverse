@@ -17,6 +17,7 @@ namespace Web3MultiplayerRPG
         [Header("General")]
         public List<GameObject> playerPrefabs = new List<GameObject>();
         public Transform initTransform;
+        public Transform gmrGateLocation;
         public CinemachineVirtualCamera cineVirtualCamera;
         public MobilePlayerInputController mobileInputController;
         
@@ -29,11 +30,22 @@ namespace Web3MultiplayerRPG
         [SerializeField] private AudioSource audioSource;
 
         private GameObject _newPlayer;
+        private bool fromGMR = false;
 
         #region UNITY_LIFECYCLE
         
         private void Start()
         {
+            URLParameters.Instance.RegisterOnDone((url)=> {
+                if(url.Search.Contains("gmr_traveler_id=")) {
+                    fromGMR = true;
+                    Debug.Log("from GMR Tunnel");
+                } else {
+                    fromGMR = false;
+                    Debug.Log("from Organic");
+                }
+            });
+
             PhotonPlayerController.OnPlayerClicked += PlayerClickedHandler;
             
             if (PhotonNetwork.IsConnectedAndReady)
@@ -83,14 +95,23 @@ namespace Web3MultiplayerRPG
         public override void OnJoinedRoom()
         {
             GameObject playerPrefab = playerPrefabs[Random.Range(0, playerPrefabs.Count - 1)];
-            
+
+            Vector3 startPosition = initTransform.position;
+
+            if(fromGMR) {
+                Debug.Log("Using Gate Location");
+                startPosition = gmrGateLocation.position;
+            } else {
+                Debug.Log("Using Default Location");
+            }
+
             if (PhotonNetwork.IsConnected)
             {
-                _newPlayer = PhotonNetwork.Instantiate(playerPrefab.name, initTransform.position, Quaternion.identity);
+                _newPlayer = PhotonNetwork.Instantiate(playerPrefab.name, startPosition, Quaternion.identity);
             }
             else
             {
-                _newPlayer = Instantiate(playerPrefab, initTransform.position, Quaternion.identity);
+                _newPlayer = Instantiate(playerPrefab, startPosition, Quaternion.identity);
             }
 
             if (_newPlayer == null)

@@ -11,4 +11,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Project/Scenes/Game.unity
     guid: c664a3230fe09ee49bf741e2bf2d278f
+  - enabled: 1
+    path: Assets/GMR/GMRTransitionScene.unity
+    guid: 3f018b6a967be4811b040f1515c44fdf
   m_configObjects: {}
